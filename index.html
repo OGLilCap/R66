@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Route 66 Stories</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@500;700;900&family=Yellowtail&family=Bitter:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: a night drive read on a phone. Asphalt ground, a desert-sunset glow behind a neon highway-shield sign,
+   a state strip laid out west to east like the map, one linen postcard per story, then that state's roadside stops. Single fixed night look. */
+:root {
+  --asphalt: #16151a;
+  --asphalt-2: #201e26;
+  --sunset-1: #e8743b;
+  --sunset-2: #b8456a;
+  --stripe: #f2c230;
+  --neon: #ff5f9e;
+  --neon-cool: #4fe3d6;
+  --paper: #f3e7cf;
+  --paper-ink: #2b2420;
+  --paper-soft: #6e5d4f;
+  --text: #f4efe6;
+  --soft: #b7aea3;
+  --faint: rgba(244, 239, 230, 0.16);
+  --font-sign: "Overpass", "Highway Gothic", "Arial Narrow", Arial, sans-serif;
+  --font-neon: "Yellowtail", "Brush Script MT", cursive;
+  --font-text: "Bitter", Georgia, serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--asphalt); }
+body {
+  margin: 0; min-height: 100vh;
+  background:
+    radial-gradient(120% 440px at 50% 0, rgba(232,116,59,.34), rgba(184,69,106,.2) 45%, transparent 75%),
+    var(--asphalt);
+  color: var(--text);
+  font-family: var(--font-text);
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 48px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+main { max-width: 560px; margin: 0 auto; display: grid; gap: 34px; }
+
+/* Hero */
+header { text-align: center; display: grid; gap: 14px; justify-items: center; }
+.sign { width: min(220px, 60vw); height: auto; filter: drop-shadow(0 0 4px rgba(255,255,255,.85)) drop-shadow(0 0 16px rgba(224,35,47,.6)) drop-shadow(0 0 34px rgba(60,90,220,.6)); }
+h1 {
+  margin: 0; font: 900 clamp(1rem, 4.6vw, 1.2rem) var(--font-sign); letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text); text-wrap: balance;
+}
+.route-ends {
+  font: 700 .78rem var(--font-sign); letter-spacing: .14em; text-transform: uppercase; color: var(--soft);
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
+}
+.route-ends b { color: var(--text); font-weight: 700; }
+.intro { margin: 0; max-width: 34ch; color: var(--soft); font-size: 1.06rem; line-height: 1.55; font-style: italic; }
+.centennial {
+  font: 700 .82rem var(--font-sign); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--stripe); border: 1px solid rgba(242,194,48,.45); border-radius: 999px; padding: 7px 14px 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* State strip, west to east */
+.strip { display: grid; gap: 10px; }
+.strip-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font: 700 .72rem var(--font-sign); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+.strip-head span:last-child { text-align: right; }
+.states { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.st {
+  font: 900 .82rem var(--font-sign); letter-spacing: .04em; text-align: center; padding: 14px 0 10px;
+  background: var(--asphalt-2); color: rgba(244,239,230,.5); border: 0; border-bottom: 3px solid rgba(244,239,230,.12);
+  border-radius: 6px 6px 0 0; cursor: pointer; min-height: 46px;
+  transition: color .3s, border-color .3s, text-shadow .3s, background .3s;
+}
+.st:hover { color: var(--text); }
+.st.on { color: #dffcf9; border-color: var(--neon-cool); text-shadow: 0 0 8px var(--neon-cool), 0 0 18px rgba(79,227,214,.6); }
+.st[aria-pressed="true"] { background: rgba(79,227,214,.14); color: #effffd; border-color: var(--neon-cool); text-shadow: 0 0 8px var(--neon-cool), 0 0 18px rgba(79,227,214,.6); }
+.strip-foot { display: flex; justify-content: center; align-items: center; gap: 14px; min-height: 28px; font: 500 .78rem var(--font-sign); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+.clear {
+  background: none; border: 1px solid var(--faint); color: var(--text); border-radius: 999px; cursor: pointer;
+  font: 700 .72rem var(--font-sign); letter-spacing: .1em; text-transform: uppercase; padding: 6px 12px 4px;
+}
+.clear:hover { border-color: var(--neon-cool); }
+
+/* Tabs */
+.tabs { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.tab {
+  background: none; border: 0; padding: 6px 0; cursor: pointer;
+  font: 700 .8rem var(--font-sign); letter-spacing: .1em; text-transform: uppercase; color: var(--soft);
+  border-bottom: 2px solid transparent; transition: color .3s, border-color .3s;
+}
+.tab[aria-pressed="true"] { color: var(--text); border-color: var(--stripe); }
+.tab:hover { color: var(--text); }
+
+/* Postcard */
+.card {
+  position: relative; background: var(--paper); color: var(--paper-ink);
+  border-radius: 6px; padding: 26px 22px 22px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 0 0 1px rgba(43,36,32,.08);
+  display: grid; gap: 14px; min-height: 22rem; align-content: start;
+  transition: opacity .3s ease; touch-action: pan-y;
+}
+.card.out { opacity: 0; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+.kicker { font: 700 .74rem var(--font-sign); letter-spacing: .14em; text-transform: uppercase; color: var(--sunset-2); padding-top: 4px; }
+.stamp-wrap { display: flex; align-items: center; flex-shrink: 0; }
+.postmark {
+  width: 64px; height: 64px; border-radius: 50%; border: 2px solid rgba(43,36,32,.38);
+  display: grid; place-items: center; text-align: center; margin-right: -16px; z-index: 1;
+  font: 900 .72rem/1.05 var(--font-sign); color: rgba(43,36,32,.55); letter-spacing: .04em; transform: rotate(-12deg);
+}
+.postmark span { display: block; font-size: 1.05rem; }
+.stamp {
+  width: 58px; height: 70px; background: var(--sunset-1); color: #fff7ea;
+  display: grid; place-items: center; text-align: center; padding: 4px;
+  font: 900 .62rem/1.1 var(--font-sign); letter-spacing: .06em; text-transform: uppercase;
+  outline: 3px dotted var(--paper); outline-offset: -2px;
+  box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px rgba(43,36,32,.2);
+}
+.stamp .num { font-size: 1.35rem; letter-spacing: 0; }
+.card h2 {
+  font-family: var(--font-sign); font-weight: 900; margin: 0; letter-spacing: -.01em;
+  font-size: clamp(1.6rem, 6.4vw, 2.1rem); line-height: 1.08; text-wrap: balance;
+}
+.card p { margin: 0; font-size: 1.1rem; line-height: 1.62; text-wrap: pretty; }
+.card a {
+  justify-self: start; color: var(--paper-soft); font-size: .98rem; font-style: italic;
+  text-decoration: none; border-bottom: 1px solid rgba(110,93,79,.4); padding-bottom: 1px; transition: color .3s, border-color .3s;
+}
+.card a:hover { color: var(--paper-ink); border-color: var(--paper-ink); }
+
+/* Nav */
+.nav { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.arrow {
+  width: 50px; height: 50px; border-radius: 8px; border: 2px solid var(--faint);
+  background: transparent; color: var(--text); cursor: pointer; font: 900 1.25rem var(--font-sign);
+  display: grid; place-items: center; transition: border-color .3s, background .3s;
+}
+.arrow:hover { border-color: var(--stripe); background: rgba(242,194,48,.08); }
+.arrow:disabled { opacity: .3; cursor: default; }
+.count { font: 700 .9rem var(--font-sign); letter-spacing: .08em; color: var(--soft); font-variant-numeric: tabular-nums; min-width: 6em; text-align: center; text-transform: uppercase; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--stripe); outline-offset: 4px; border-radius: 4px; }
+
+/* Center line divider */
+.centerline { height: 4px; border: 0; margin: 0; background: repeating-linear-gradient(90deg, var(--stripe) 0 28px, transparent 28px 52px); opacity: .85; }
+
+/* Attractions */
+.stops { display: grid; gap: 18px; }
+.stops h3 { margin: 0; font-family: var(--font-neon); font-weight: 400; font-size: 2.2rem; line-height: 1; color: #ffe3ee; text-shadow: 0 0 8px var(--neon), 0 0 22px rgba(255,95,158,.45); text-align: center; }
+.stops .sub { margin: -8px 0 0; text-align: center; color: var(--soft); font: 500 .78rem var(--font-sign); letter-spacing: .12em; text-transform: uppercase; }
+.stop-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.stop { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 14px; padding-block: 14px; border-top: 1px solid var(--faint); }
+.stop:first-child { border-top: 0; }
+.stop::before { content: ""; width: 10px; height: 10px; margin-top: 6px; border-radius: 50%; background: var(--stripe); box-shadow: 0 0 10px rgba(242,194,48,.6); }
+.stop-name { font: 900 1.05rem var(--font-sign); color: var(--text); }
+.stop-town { font: 700 .72rem var(--font-sign); letter-spacing: .12em; text-transform: uppercase; color: var(--neon-cool); margin-top: 2px; }
+.stop-desc { margin: 6px 0 0; color: var(--soft); line-height: 1.5; font-size: .98rem; }
+.pick { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.pick button {
+  background: var(--asphalt-2); color: var(--text); border: 1px solid var(--faint); border-radius: 999px; cursor: pointer;
+  font: 700 .82rem var(--font-sign); letter-spacing: .04em; padding: 10px 14px 8px; min-height: 40px;
+}
+.pick button:hover { border-color: var(--neon-cool); }
+.stop-tools { display: grid; gap: 12px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--asphalt-2); border-radius: 10px; padding: 4px; gap: 4px; }
+.seg button {
+  background: transparent; border: 0; border-radius: 7px; cursor: pointer; color: var(--soft); min-height: 42px;
+  font: 700 .82rem var(--font-sign); letter-spacing: .08em; text-transform: uppercase; padding: 10px 8px 8px;
+}
+.seg button[aria-pressed="true"] { background: var(--stripe); color: var(--asphalt); }
+.search {
+  width: 100%; background: var(--asphalt-2); color: var(--text); border: 1px solid var(--faint); border-radius: 10px;
+  font: 500 1rem var(--font-sign); padding: 12px 14px 10px; min-height: 44px;
+}
+.search::placeholder { color: var(--soft); }
+.search:focus-visible { outline: 2px solid var(--stripe); outline-offset: 2px; }
+.stop-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.badge { flex-shrink: 0; font: 900 .62rem var(--font-sign); letter-spacing: .12em; text-transform: uppercase; color: var(--asphalt); background: var(--stripe); border-radius: 4px; padding: 4px 6px 2px; }
+.stop-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 2px; }
+.status { margin-left: 8px; padding: 2px 6px 1px; border-radius: 4px; font-size: .64rem; letter-spacing: .1em; border: 1px solid currentColor; }
+.st-o { color: var(--neon-cool); }
+.st-v { color: var(--soft); }
+.st-r { color: var(--sunset-1); }
+.stop-map { display: inline-block; margin-top: 6px; color: var(--neon-cool); font: 700 .74rem var(--font-sign); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+.stop-map:hover { text-decoration: underline; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.no-stops { text-align: center; color: var(--soft); font-style: italic; margin: 0; }
+
+/* Facts at a glance */
+.glance { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
+.glance div { display: grid; gap: 4px; }
+.glance b { font: 900 1.7rem var(--font-sign); color: var(--text); font-variant-numeric: tabular-nums; }
+.glance span { font: 500 .72rem var(--font-sign); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+
+/* Keep exploring */
+.keep { display: grid; gap: 4px; text-align: center; }
+.keep h3 { font-family: var(--font-neon); font-weight: 400; font-size: 2.1rem; margin: 0 0 6px; color: #dffcf9; text-shadow: 0 0 8px var(--neon-cool), 0 0 22px rgba(79,227,214,.45); }
+.keep a { color: var(--text); text-decoration: none; font: 700 1.02rem var(--font-sign); letter-spacing: .02em; padding-block: 7px; transition: color .3s; }
+.keep a span { display: block; color: var(--soft); font: italic 400 .95rem var(--font-text); letter-spacing: 0; margin-top: 2px; }
+.keep a:hover { color: var(--stripe); }
+
+footer { text-align: center; display: grid; gap: 10px; color: var(--soft); }
+footer .tap { font-family: var(--font-neon); font-size: 1.6rem; color: #ffe3ee; text-shadow: 0 0 10px rgba(255,95,158,.6); }
+footer small { font-size: .82rem; line-height: 1.5; }
+footer a { color: var(--soft); }
+
+@media (prefers-reduced-motion: reduce) { .sign { animation: none; } .card, .st { transition: none; } }
+@media (max-width: 380px) { .st { font-size: .7rem; } .postmark { display: none; } }
+</style>
+
+</head>
+<body>
+
+<main>
+  <header>
+    <img class="sign" id="sign" alt="Route 66 road sign" width="554" height="554" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAQEBUQEBAVFRUVFRUVFRgWFxUVFRYWFxUWFxUWFRUZHSggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGxAQGy8mHyUtLS0tLS0tLy8tLSstLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAioCKgMBIgACEQEDEQH/xAAcAAEAAgIDAQAAAAAAAAAAAAAABwgFBgEDBAL/xABREAABAwIBBwYJCAcGBgIDAQABAAIDBBEFBgcSITFBURMiYXGBkRQXMkJSkqGx0SNUYnKCk6OyCDNzosHS0yQ0NUNTwhVEY4Oz8CXiZOHxdP/EABoBAQACAwEAAAAAAAAAAAAAAAADBAECBQb/xAA7EQEAAgECAwQIBQMDAwUAAAAAAQIDBBESITEFE0FRFBUyUlNhcZEigaGxwTPR4TRCcgaC8SM1Q0WS/9oADAMBAAIRAxEAPwCcUREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBYzKHHaeggfU1Lw1jR2uO5rBvceC8+VuU9NhlOaiodYbGMFtOR25rBx6dg2qr2XGWNTis/KTGzGlwijb5LGn3usBd2/o2ILDZNZ0cLrbATiF51aE9mG/AOvou7Ct1a4HWFTGswCsgiZPLTyMikF2Pc0hjgbW52wX6V7sBy0xGhsKaqkY0bGkhzPUdcW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QEREBfE0LXtLXtDmnaHAEHrBX2iCOMqczuHVYLqdvgshvYxi8d+mK9gPq2UNZW5ssSw+73RcrEP82G7gBxe3ymdZ1dKtYuCEFPcmMrq7DX6VLO5ovrYedG76zDqPWNfSpnyfz40kkDjWRPjlY29oxpslPBhNtE9DtXSs5lnmooK/SljHg858+Mcxx+nHsPWLFQTlHm9xGinbA+Av03aMTogXskO6xA1HodYoM5llner628dOTTQncx3yjh9OQWI6m2WmYLgdZXy8nTwySvJ12BIHS92xo6SVLeQ+ZEkCXFHkbxDG7Xu/WSDYehvepmwvC4KWMRU8TI2DY1gsO3iekoIcyUzFjVJiM3A8lF7nyn/aO1S1gWTtHQs0KWnjiG8tHOd0ueec49ZWVRAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQf/2Q==">
+    <h1>Stories from the Mother Road</h1>
+    <div class="route-ends"><b>Santa Monica</b> <span>2,448 miles · 8 states</span> <b>Chicago</b></div>
+    <p class="intro">A century of stories and roadside stops, from the first telegram in 1926 to the neon still glowing tonight.</p>
+    <div class="centennial" id="centennial">Route 66 turns 100 on November 11, 2026</div>
+  </header>
+
+  <section class="strip" aria-label="Pick a state">
+    <div class="strip-head"><span>West</span><span>Tap a state</span><span>East</span></div>
+    <div class="states" id="states">
+      <button class="st" id="st-CA" data-s="CA" aria-pressed="false" aria-label="California">CA</button>
+      <button class="st" id="st-AZ" data-s="AZ" aria-pressed="false" aria-label="Arizona">AZ</button>
+      <button class="st" id="st-NM" data-s="NM" aria-pressed="false" aria-label="New Mexico">NM</button>
+      <button class="st" id="st-TX" data-s="TX" aria-pressed="false" aria-label="Texas">TX</button>
+      <button class="st" id="st-OK" data-s="OK" aria-pressed="false" aria-label="Oklahoma">OK</button>
+      <button class="st" id="st-KS" data-s="KS" aria-pressed="false" aria-label="Kansas">KS</button>
+      <button class="st" id="st-MO" data-s="MO" aria-pressed="false" aria-label="Missouri">MO</button>
+      <button class="st" id="st-IL" data-s="IL" aria-pressed="false" aria-label="Illinois">IL</button>
+    </div>
+    <div class="strip-foot"><span id="strip-label">The whole road</span><button class="clear" id="clear" hidden>All 8 states</button></div>
+  </section>
+
+  <div class="tabs" role="group" aria-label="Choose stories">
+    <button class="tab" id="t-all" data-cat="all" aria-pressed="true">All</button>
+    <button class="tab" id="t-road" data-cat="road" aria-pressed="false">The Road</button>
+    <button class="tab" id="t-roadside" data-cat="roadside" aria-pressed="false">Roadside</button>
+    <button class="tab" id="t-culture" data-cat="culture" aria-pressed="false">Culture</button>
+  </div>
+
+  <article class="card" id="card" aria-live="polite">
+    <div class="card-top">
+      <div class="kicker" id="s-kicker">The Road</div>
+      <div class="stamp-wrap" aria-hidden="true">
+        <div class="postmark" id="s-postmark">ROUTE<span>66</span></div>
+        <div class="stamp" id="s-stamp"><div><div class="num">66</div>USA</div></div>
+      </div>
+    </div>
+    <h2 id="s-title">A number settled by telegram</h2>
+    <p id="s-body">Planners first wanted the Chicago to Los Angeles road to be Route 60. Kentucky objected. On April 30, 1926, Oklahoma's Cyrus Avery and Missouri's B. H. Piepmeier sent a telegram from Springfield, Missouri, proposing 66 instead.</p>
+    <a id="s-link" href="https://en.wikipedia.org/wiki/U.S._Route_66" target="_blank" rel="noopener">Read more</a>
+  </article>
+
+  <div class="nav">
+    <button class="arrow" id="prev" aria-label="Previous story">‹</button>
+    <span class="count" id="count"></span>
+    <button class="arrow" id="next" aria-label="Next story">›</button>
+  </div>
+
+  <hr class="centerline">
+
+  <section class="stops" id="stops" aria-live="polite">
+    <h3 id="stops-title">Roadside stops</h3>
+    <p class="sub" id="stops-sub">Pick a state to see every stop</p>
+    <div class="pick" id="pick"></div>
+    <div class="stop-tools" id="stop-tools" hidden>
+      <div class="seg" role="group" aria-label="Which stops to show">
+        <button type="button" id="mode-top" data-mode="top" aria-pressed="true">Must-see</button>
+        <button type="button" id="mode-all" data-mode="all" aria-pressed="false">All stops</button>
+      </div>
+      <label class="sr-only" for="stop-search">Search stops</label>
+      <input class="search" id="stop-search" type="search" placeholder="Search by name or town" autocomplete="off">
+    </div>
+    <ul class="stop-list" id="stop-list" hidden></ul>
+    <p class="no-stops" id="no-stops" hidden>No stops match that search.</p>
+  </section>
+
+  <hr class="centerline">
+
+  <section class="glance" aria-label="Route 66 by the numbers">
+    <div><b>1926</b><span>Commissioned</span></div>
+    <div><b>1,139</b><span>Miles to midpoint</span></div>
+    <div><b>1985</b><span>Decommissioned</span></div>
+  </section>
+
+  <hr class="centerline">
+
+  <section class="keep">
+    <h3>Keep driving</h3>
+    <a href="https://www.nps.gov/subjects/travelroute66/index.htm" target="_blank" rel="noopener">Plan a trip<span>The National Park Service's guide to sites along the road</span></a>
+    <a href="https://en.wikipedia.org/wiki/U.S._Route_66" target="_blank" rel="noopener">The full history<span>From 1926 to the centennial, state by state</span></a>
+    <a href="https://en.wikipedia.org/wiki/The_Negro_Motorist_Green_Book" target="_blank" rel="noopener">The Green Book<span>How Black travelers found safe stops on the road</span></a>
+    <a href="https://en.wikipedia.org/wiki/The_Grapes_of_Wrath" target="_blank" rel="noopener">The Grapes of Wrath<span>The 1939 novel that named the Mother Road</span></a>
+  </section>
+
+  <hr class="centerline">
+
+  <footer>
+    <div class="tap">Tap your Epoch bracelet again for another story.</div>
+    <small>A keepsake by <a href="https://www.epoch-us.com/" target="_blank" rel="noopener">Epoch</a>. Not affiliated with or endorsed by any Route 66 association, museum or government agency.</small>
+    <small>V. 1.0.0</small>
+  </footer>
+</main>
+
+<script>
+const W = "https://en.wikipedia.org/wiki/", R66 = W + "U.S._Route_66";
+const STATES = { CA: "California", AZ: "Arizona", NM: "New Mexico", TX: "Texas", OK: "Oklahoma", KS: "Kansas", MO: "Missouri", IL: "Illinois" };
+const WEST_TO_EAST = ["CA", "AZ", "NM", "TX", "OK", "KS", "MO", "IL"];
+
+const FACTS = [
+  // The Road: the whole route
+  { c: "road", y: 1926, s: null, t: "Born November 11, 1926", b: "Route 66 became official when the new U.S. numbered highway system was approved on November 11, 1926. Much of it was still gravel, dirt or wooden planks.", l: R66 },
+  { c: "road", y: 1927, s: null, t: "The Main Street of America", b: "Business owners formed the U.S. Highway 66 Association in 1927 to promote the road. Its slogan, \"The Main Street of America,\" stuck for decades.", l: R66 },
+  { c: "road", y: 1938, s: null, t: "Paved end to end", b: "By 1938, all 2,448 miles from Chicago to Los Angeles were paved. It was one of the first U.S. highways to be fully paved.", l: R66 },
+  { c: "road", y: 1946, s: null, t: "The first guidebook", b: "In 1946, Jack Rittenhouse published A Guide Book to Highway 66, listing gas stations, motels and cafés mile by mile for a wave of postwar vacationers.", l: R66 },
+  { c: "road", y: 1956, s: null, t: "The interstates arrive", b: "The Federal-Aid Highway Act of 1956 funded the Interstate system. Over the next 30 years, Interstates 55, 44, 40, 15 and 10 slowly replaced Route 66, piece by piece.", l: W + "Interstate_Highway_System" },
+  { c: "road", y: 1985, s: null, t: "Decommissioned", b: "On June 27, 1985, Route 66 was officially removed from the U.S. highway system. Its shields came down, and many towns along it emptied.", l: R66 },
+  { c: "road", y: 1999, s: null, t: "Preserving the road", b: "In 1999, Congress created the Route 66 Corridor Preservation Program within the National Park Service to help save motels, gas stations and signs along the route.", l: "https://www.nps.gov/subjects/travelroute66/index.htm" },
+  { c: "road", y: 2026, s: null, t: "One hundred years", b: "Route 66 turns 100 on November 11, 2026. Towns from Chicago to Santa Monica are celebrating with festivals, restored neon and new markers.", l: R66 },
+  { c: "culture", y: 1939, s: null, t: "The Mother Road", b: "John Steinbeck gave Route 66 its most lasting nickname in The Grapes of Wrath (1939): \"66 is the mother road, the road of flight.\"", l: W + "The_Grapes_of_Wrath" },
+  { c: "culture", y: 1946, s: null, t: "Get your kicks", b: "Songwriter Bobby Troup wrote \"(Get Your Kicks on) Route 66\" on a 1946 drive west, after his wife Cynthia suggested the title. Nat King Cole's trio made it a hit, and Chuck Berry and the Rolling Stones later covered it.", l: W + "(Get_Your_Kicks_on)_Route_66" },
+  { c: "culture", y: 1936, s: null, t: "The Green Book", b: "From 1936 to 1966, The Negro Motorist Green Book listed motels, restaurants and gas stations that would serve Black travelers. On Route 66, which passed through many sundown towns, it was a lifeline.", l: W + "The_Negro_Motorist_Green_Book" },
+  { c: "culture", y: 1960, s: null, t: "Route 66 on TV", b: "From 1960 to 1964, the CBS series Route 66 followed two young men driving a Corvette across America. Few episodes were actually filmed on the road.", l: W + "Route_66_(TV_series)" },
+  { c: "culture", y: 2006, s: null, t: "Radiator Springs", b: "Pixar's Cars (2006) was inspired by towns the interstate passed by. Route 66 historian Michael Wallis, author of Route 66: The Mother Road, voiced the Sheriff.", l: W + "Cars_(film)" },
+
+  // Illinois
+  { c: "roadside", y: null, s: "IL", t: "Where it all begins", b: "Westbound Route 66 starts on Adams Street at Michigan Avenue in downtown Chicago, across from the Art Institute. A brown \"Begin\" sign marks the spot.", l: R66 },
+  { c: "roadside", y: 1923, s: "IL", t: "Breakfast at the start", b: "Lou Mitchell's has served breakfast near the start of Route 66 in Chicago since 1923. Guests are often handed a donut hole and a box of Milk Duds.", l: W + "Lou_Mitchell's" },
+  { c: "roadside", y: 1965, s: "IL", t: "The Gemini Giant", b: "A 28-foot fiberglass astronaut holding a rocket has stood in Wilmington, Illinois, since 1965. He was built to draw drivers to the Launching Pad drive-in.", l: W + "Gemini_Giant" },
+  { c: "roadside", y: 1933, s: "IL", t: "Ambler's Texaco", b: "The little gas station in Dwight, Illinois, pumped gas from 1933 until 1999, one of the longest runs of any station on Route 66. It is now a visitor center.", l: R66 },
+  { c: "culture", y: 1934, s: "IL", t: "Steak 'n Shake's first stand", b: "Gus Belt opened the first Steak 'n Shake on Route 66 in Normal, Illinois, in 1934, grinding steak into burgers in front of customers.", l: W + "Steak_'n_Shake" },
+  { c: "culture", y: 1949, s: "IL", t: "The Cozy Dog", b: "Ed Waldmire Jr. perfected a hot dog fried in batter on a stick and called it the Cozy Dog. His Cozy Dog Drive In in Springfield, Illinois, has served them since 1949.", l: W + "Cozy_Dog_Drive_In" },
+  { c: "culture", y: null, s: "IL", t: "Maple sirup, not syrup", b: "The Funk family in Shirley, Illinois, has sold maple sirup to Route 66 travelers for generations. They spell it the old way, with an i, because it is pure sap boiled down with no sugar added.", l: R66 },
+
+  // Missouri
+  { c: "road", y: 1926, s: "MO", t: "A number settled by telegram", b: "Planners first wanted the Chicago to Los Angeles road to be Route 60. Kentucky objected. On April 30, 1926, Oklahoma's Cyrus Avery and Missouri's B. H. Piepmeier sent a telegram from Springfield, Missouri, proposing 66 instead. Springfield still calls itself the birthplace of Route 66.", l: R66 },
+  { c: "road", y: 1940, s: "MO", t: "Built for the war", b: "Fort Leonard Wood opened beside Route 66 in Missouri in 1940. Convoys of soldiers and supplies crowded the road, and in 1945 the Hooker Cut was blasted through the Ozark hills to make room for four lanes.", l: R66 },
+  { c: "roadside", y: 1929, s: "MO", t: "The bridge with a bend", b: "The Chain of Rocks Bridge over the Mississippi near St. Louis has a 22-degree turn in the middle. It carried Route 66 traffic, closed in 1968, and reopened in 1999 for walkers and cyclists.", l: W + "Chain_of_Rocks_Bridge" },
+  { c: "roadside", y: 1941, s: "MO", t: "Upside-down custard", b: "Ted Drewes Frozen Custard on Chippewa Street in St. Louis serves its \"concretes\" upside down to prove how thick they are. The stand has been there since 1941.", l: W + "Ted_Drewes" },
+  { c: "road", y: 1983, s: "MO", t: "The town that disappeared", b: "Times Beach, Missouri, sat on Route 66 until dioxin contamination forced everyone out in 1983. The town was torn down, and the land is now Route 66 State Park.", l: W + "Times_Beach,_Missouri" },
+  { c: "roadside", y: 1946, s: "MO", t: "The Munger Moss Motel", b: "The Munger Moss in Lebanon, Missouri, has welcomed travelers since 1946. Its big neon sign is one of the best loved on the road.", l: W + "Munger_Moss_Motel" },
+  { c: "culture", y: null, s: "MO", t: "Painted barns", b: "Meramec Caverns in Stanton, Missouri, advertised by painting its name on barn roofs across the Midwest. Owner Lester Dill also claimed Jesse James hid in the cave.", l: W + "Meramec_Caverns" },
+
+  // Kansas
+  { c: "roadside", y: 1923, s: "KS", t: "Kansas's 13 miles", b: "Route 66 runs only about 13 miles through the corner of Kansas. Its Rainbow Bridge near Riverton, built in 1923, is the last of three graceful arch bridges that once stood there.", l: R66 },
+  { c: "culture", y: null, s: "KS", t: "The real Tow Mater", b: "In Galena, Kansas, an old rusty tow truck at the Cars on the Route stop helped inspire Mater in Pixar's Cars. The stop is a restored Kan-O-Tex gas station.", l: W + "Galena,_Kansas" },
+  { c: "roadside", y: 1925, s: "KS", t: "The Riverton store", b: "Nelson's Old Riverton Store opened in 1925 and still sells groceries, deli sandwiches and Route 66 souvenirs from its original building.", l: R66 },
+  { c: "road", y: 1929, s: "KS", t: "Short but paved first", b: "Kansas is said to have been the first state to pave its whole stretch of Route 66. With only 13 miles to finish, it had a head start.", l: R66 },
+  { c: "road", y: null, s: "KS", t: "A mining town road", b: "Galena grew up around lead and zinc mines. Route 66 brought travelers down its Main Street, and the town's brick storefronts still line the old road.", l: W + "Galena,_Kansas" },
+
+  // Oklahoma
+  { c: "road", y: 1926, s: "OK", t: "The Father of Route 66", b: "Tulsa businessman Cyrus Avery pushed for a highway that bent southwest through Oklahoma instead of running straight across the Rockies. It linked hundreds of small towns to Chicago and Los Angeles.", l: W + "Cyrus_Avery" },
+  { c: "road", y: 1928, s: "OK", t: "The Bunion Derby", b: "In 1928, 199 runners set out from Los Angeles in a footrace to New York, much of it on Route 66. Only 55 finished. The winner was Andy Payne, a 20-year-old Cherokee farm boy from Foyil, Oklahoma, who took home $25,000.", l: W + "Trans-American_Footrace" },
+  { c: "road", y: 1939, s: "OK", t: "The road of flight", b: "During the Dust Bowl, some 200,000 people fled the drought on the Plains, many driving Route 66 to California with everything they owned tied to their cars.", l: W + "Dust_Bowl" },
+  { c: "road", y: 1922, s: "OK", t: "The Sidewalk Highway", b: "Near Miami, Oklahoma, a stretch of the original road is only nine feet wide. Drivers meeting head-on each had to put two wheels in the dirt.", l: R66 },
+  { c: "roadside", y: 1972, s: "OK", t: "The Blue Whale of Catoosa", b: "Hugh Davis built a smiling blue whale in his pond as an anniversary gift for his wife, Zelta. Finished in the early 1970s, it became a favorite swimming hole for travelers.", l: W + "Blue_Whale_of_Catoosa" },
+  { c: "roadside", y: 2007, s: "OK", t: "A 66-foot soda bottle", b: "POPS in Arcadia, Oklahoma, opened in 2007 under a 66-foot steel soda bottle that glows at night. Inside are hundreds of kinds of soda.", l: R66 },
+  { c: "roadside", y: 1898, s: "OK", t: "The Round Barn", b: "The Round Barn in Arcadia was built in 1898, decades before Route 66 came past its door. Volunteers restored it in the 1990s.", l: W + "Arcadia_Round_Barn" },
+  { c: "roadside", y: 1939, s: "OK", t: "The Rock Café", b: "The Rock Café in Stroud was built in 1939 from sandstone dug up during road construction. Its owner, Dawn Welch, helped inspire Sally in Cars.", l: W + "Rock_Café" },
+  { c: "roadside", y: null, s: "OK", t: "The most miles left", b: "Oklahoma has more drivable miles of the original Route 66 than any other state, about 400 of them.", l: R66 },
+
+  // Texas
+  { c: "roadside", y: 1974, s: "TX", t: "Cadillac Ranch", b: "In 1974, the art group Ant Farm buried ten old Cadillacs nose-down in a field outside Amarillo, Texas. Visitors are encouraged to spray paint them, so their colors change every day.", l: W + "Cadillac_Ranch" },
+  { c: "roadside", y: null, s: "TX", t: "Halfway there", b: "Adrian, Texas, sits at the midpoint of Route 66: 1,139 miles to Chicago and 1,139 miles to Los Angeles.", l: W + "Adrian,_Texas" },
+  { c: "roadside", y: 1936, s: "TX", t: "The U-Drop Inn", b: "This Art Deco gas station and café opened in Shamrock, Texas, in 1936. It inspired Ramone's body shop in the movie Cars.", l: W + "U-Drop_Inn" },
+  { c: "culture", y: 1960, s: "TX", t: "The 72-ounce steak", b: "The Big Texan Steak Ranch opened on Route 66 in Amarillo in 1960. Eat its 72-ounce steak dinner in an hour and it is free.", l: W + "Big_Texan_Steak_Ranch" },
+  { c: "roadside", y: 1929, s: "TX", t: "The first Phillips 66 in Texas", b: "A tiny cottage-style station in McLean, Texas, became the first Phillips 66 station in the state in 1929. It has been restored with its old pumps.", l: R66 },
+  { c: "culture", y: null, s: "TX", t: "The Devil's Rope", b: "McLean's Devil's Rope Museum is devoted to barbed wire, the fencing that closed the open range, along with a room of Route 66 history.", l: R66 },
+  { c: "roadside", y: null, s: "TX", t: "The leaning tower of Texas", b: "In Groom, a water tower was set on purpose at a steep tilt to make drivers stop and look. It still works.", l: R66 },
+
+  // New Mexico
+  { c: "road", y: 1937, s: "NM", t: "The road that crosses itself", b: "Until 1937, Route 66 looped north to Santa Fe. A new straight alignment sent it through Albuquerque instead. At Fourth Street and Central Avenue, the old route and the new one meet, so Route 66 crosses itself.", l: R66 },
+  { c: "road", y: 1926, s: "NM", t: "La Bajada Hill", b: "South of Santa Fe, the early road dropped down La Bajada Hill in more than 20 tight switchbacks. Some drivers paid locals to take their cars down for them.", l: R66 },
+  { c: "roadside", y: 1939, s: "NM", t: "Tucumcari Tonite!", b: "Billboards hundreds of miles away promised 2,000 motel rooms in Tucumcari, New Mexico. The Blue Swallow Motel, opened in 1939, still lights its neon every night.", l: W + "Blue_Swallow_Motel" },
+  { c: "roadside", y: 1937, s: "NM", t: "Hotel of the stars", b: "The El Rancho Hotel in Gallup, New Mexico, opened in 1937. Movie stars filming westerns nearby stayed there, and rooms are still named for them.", l: W + "El_Rancho_Hotel_%26_Motel" },
+  { c: "roadside", y: null, s: "NM", t: "The Blue Hole", b: "In Santa Rosa, a clear blue spring about 80 feet deep stays near 62 degrees all year. Scuba divers come from all over to train in it.", l: W + "Blue_Hole_(New_Mexico)" },
+  { c: "culture", y: 1927, s: "NM", t: "The KiMo Theatre", b: "The KiMo opened on Central Avenue in Albuquerque in 1927 in a style called Pueblo Deco, mixing Native American designs with Art Deco.", l: W + "KiMo_Theater" },
+  { c: "road", y: null, s: "NM", t: "The longest Main Street", b: "Central Avenue carries Route 66 about 18 miles across Albuquerque, the longest city stretch of the road.", l: R66 },
+
+  // Arizona
+  { c: "road", y: 1984, s: "AZ", t: "The last town bypassed", b: "On October 13, 1984, Interstate 40 opened around Williams, Arizona. It was the last town on Route 66 to be bypassed. Locals held a funeral for the old road.", l: W + "Williams,_Arizona" },
+  { c: "road", y: 1987, s: "AZ", t: "The barber who saved it", b: "In 1987, Seligman barber Angel Delgadillo helped found the Historic Route 66 Association of Arizona. That year, Arizona named its stretch Historic Route 66, and other states followed.", l: W + "Seligman,_Arizona" },
+  { c: "roadside", y: 1932, s: "AZ", t: "A national park on 66", b: "Petrified Forest is the only national park with a stretch of Route 66 inside it. A rusted 1932 Studebaker marks where the old road ran.", l: W + "Petrified_Forest_National_Park" },
+  { c: "roadside", y: 1950, s: "AZ", t: "Sleep in a wigwam", b: "Chester Lewis opened the Wigwam Motel in Holbrook, Arizona, in 1950. Guests still sleep in concrete teepees, with classic cars parked outside.", l: W + "Wigwam_Motels" },
+  { c: "roadside", y: 1953, s: "AZ", t: "The Snow Cap", b: "Juan Delgadillo opened the Snow Cap Drive-In in Seligman, Arizona, in 1953. He was famous for pranks, like a mustard bottle that shot out string.", l: W + "Seligman,_Arizona" },
+  { c: "roadside", y: null, s: "AZ", t: "The burros of Oatman", b: "Wild burros wander the streets of Oatman, Arizona. They descend from animals left behind by gold miners. Clark Gable and Carole Lombard are said to have spent their wedding night at the Oatman Hotel in 1939.", l: W + "Oatman,_Arizona" },
+  { c: "roadside", y: 1930, s: "AZ", t: "La Posada", b: "Architect Mary Colter designed La Posada in Winslow for the Santa Fe Railway. It opened in 1930 and is now a restored hotel again.", l: W + "La_Posada_Hotel" },
+  { c: "culture", y: null, s: "AZ", t: "Here it is", b: "Billboards for the Jackrabbit Trading Post count down the miles across Arizona. At Joseph City, a giant sign finally announces, \"HERE IT IS.\"", l: R66 },
+  { c: "culture", y: 1999, s: "AZ", t: "Standin' on the corner", b: "A line in the Eagles' 1972 hit \"Take It Easy\" made a street corner in Winslow, Arizona, famous. The town opened Standin' on the Corner Park there in 1999.", l: W + "Winslow,_Arizona" },
+
+  // California
+  { c: "roadside", y: 1938, s: "CA", t: "Roy's of Amboy", b: "Roy's Motel and Café opened in the Mojave Desert in 1938. Its boomerang-shaped sign, added in 1959, is one of the most photographed on the road.", l: W + "Roy's_Motel_and_Café" },
+  { c: "roadside", y: 2009, s: "CA", t: "The end of the trail", b: "The \"End of the Trail\" sign on the Santa Monica Pier went up in 2009. The official end of Route 66 was a few blocks inland, at Lincoln and Olympic Boulevards.", l: W + "Santa_Monica_Pier" },
+  { c: "culture", y: 1940, s: "CA", t: "Where McDonald's began", b: "Brothers Richard and Maurice McDonald opened their first restaurant in San Bernardino in 1940. The site is now an unofficial McDonald's museum on Route 66.", l: W + "McDonald's" },
+  { c: "roadside", y: 1949, s: "CA", t: "The other Wigwam Motel", b: "A second Wigwam Motel has stood on Route 66 in San Bernardino since 1949. It is one of three left of the seven once built.", l: W + "Wigwam_Motels" },
+  { c: "roadside", y: 2000, s: "CA", t: "Elmer's Bottle Tree Ranch", b: "Starting in 2000, Elmer Long built a forest of metal poles hung with thousands of colorful glass bottles in Oro Grande. They chime in the desert wind.", l: R66 },
+  { c: "culture", y: 1987, s: "CA", t: "The Bagdad Cafe", b: "The 1987 film Bagdad Cafe was shot at a roadside diner in Newberry Springs, in the Mojave. Fans from Europe still stop in to see it.", l: W + "Bagdad_Cafe" },
+  { c: "roadside", y: 1911, s: "CA", t: "The Harvey House in Barstow", b: "Barstow's Casa del Desierto opened as a Harvey House railroad hotel in 1911. Today it holds the Route 66 Mother Road Museum.", l: W + "Casa_del_Desierto" }
+];
+
+// Each stop: [name, town, what it is, must-see, status, link].
+// Status: "o" open to visit, "v" see from outside or a free landmark, "r" ruins or ghost town.
+// Link: an official site, or "r:<page>" for that town's page on theroute-66.com.
+// Listed in driving order, Chicago toward Santa Monica.
+const STOPS = {
+  IL: [
+    ["Route 66 Begin sign", "Chicago", "Adams Street at Michigan Avenue, where westbound 66 starts.", 1, "v", "r:chicago"],
+    ["Art Institute of Chicago", "Chicago", "Its bronze lions stand at the start of the road.", 1, "o", "https://www.artic.edu/"],
+    ["Buckingham Fountain", "Chicago", "Grant Park landmark by the road's original eastern end.", 0, "v", "r:chicago"],
+    ["Lou Mitchell's", "Chicago", "Breakfast, donut holes and Milk Duds since 1923.", 1, "o", "https://www.loumitchellsrestaurant.com/"],
+    ["Willis Tower Skydeck", "Chicago", "Glass ledges 103 floors above the start of the route.", 0, "o", "https://theskydeck.com/"],
+    ["Henry's Drive-In", "Cicero", "Hot dogs under a classic neon sign since the 1950s.", 0, "o", "r:cicero"],
+    ["Hofmann Tower", "Lyons", "A 1908 concrete tower by the Des Plaines River.", 0, "v", "r:lyons"],
+    ["Dell Rhea's Chicken Basket", "Willowbrook", "Fried chicken on Route 66 since 1946.", 1, "o", "r:willowbrook"],
+    ["Rialto Square Theatre", "Joliet", "A 1926 movie palace, as old as Route 66.", 1, "o", "https://www.rialtosquare.com/"],
+    ["Joliet Area Historical Museum", "Joliet", "Local history and a Route 66 welcome center.", 0, "o", "r:joliet"],
+    ["Old Joliet Prison", "Joliet", "The 1858 prison from The Blues Brothers. Seasonal tours.", 0, "o", "r:joliet"],
+    ["Midewin National Tallgrass Prairie", "Elwood", "Prairie trails and a bison herd beside the old road.", 0, "o", "https://www.fs.usda.gov/midewin"],
+    ["Gemini Giant", "Wilmington", "A 28-foot fiberglass astronaut from 1965.", 1, "v", "r:wilmington"],
+    ["Polk-a-Dot Drive In", "Braidwood", "1950s diner with statues of Elvis, Marilyn and the Blues Brothers.", 1, "o", "r:braidwood"],
+    ["Gardner Two-Cell Jail", "Gardner", "A tiny 1906 jailhouse beside the old road.", 0, "v", "r:gardner"],
+    ["Ambler's Texaco", "Dwight", "A 1933 station, now a seasonal visitor center.", 1, "v", "r:dwight"],
+    ["Standard Oil Gas Station", "Odell", "A restored 1932 station.", 1, "v", "r:odell"],
+    ["Illinois Route 66 Hall of Fame & Museum", "Pontiac", "Exhibits, Bob Waldmire's VW bus and his school bus home.", 1, "o", "r:pontiac"],
+    ["Pontiac murals", "Pontiac", "More than 20 painted walls downtown.", 0, "v", "r:pontiac"],
+    ["Pontiac swinging bridges", "Pontiac", "Three suspension footbridges over the Vermilion River.", 0, "v", "r:pontiac"],
+    ["Old Illinois State Police office", "Pontiac", "A historic 1940s police post on the route.", 0, "v", "r:pontiac"],
+    ["Memory Lane", "Lexington", "A stretch of 1926 road lined with replica billboards.", 0, "v", "r:lexington"],
+    ["Dead Man's Curve", "Towanda", "A sharp bend on the original alignment.", 0, "v", "r:towanda"],
+    ["Sprague's Super Service", "Normal", "A 1931 Tudor-style gas station.", 0, "v", "r:normal"],
+    ["Funk's Grove Pure Maple Sirup", "Shirley", "Maple sirup sold to travelers for generations.", 1, "o", "r:funks-grove"],
+    ["Dixie Travel Plaza", "McLean", "A truck stop serving travelers since 1928.", 0, "o", "r:mclean-il"],
+    ["Tall Paul", "Atlanta", "A giant fiberglass man holding a hot dog.", 1, "v", "r:atlanta"],
+    ["J.H. Hawes Grain Elevator Museum", "Atlanta", "A restored 1904 wooden grain elevator.", 0, "o", "r:atlanta"],
+    ["Atlanta Public Library", "Atlanta", "An eight-sided library from 1908.", 0, "v", "r:atlanta"],
+    ["Railsplitter Covered Wagon", "Lincoln", "A giant covered wagon with Abe Lincoln at the reins.", 1, "v", "r:lincoln"],
+    ["The Mill Museum on 66", "Lincoln", "A 1929 roadhouse shaped like a Dutch windmill.", 0, "o", "r:lincoln"],
+    ["Tropics sign", "Lincoln", "A restored neon sign from a 1950s restaurant.", 0, "v", "r:lincoln"],
+    ["Abraham Lincoln Presidential Library & Museum", "Springfield", "Lincoln's life, told with full-scale scenes.", 1, "o", "https://presidentlincoln.illinois.gov/"],
+    ["Lincoln Home", "Springfield", "The only house Abraham Lincoln ever owned.", 1, "o", "https://www.nps.gov/liho/"],
+    ["Lincoln Tomb", "Springfield", "Rub the nose on Lincoln's bronze bust for luck.", 0, "v", "r:springfield"],
+    ["Cozy Dog Drive In", "Springfield", "Home of the Cozy Dog since 1949.", 1, "o", "r:springfield"],
+    ["Maid-Rite Sandwich Shop", "Springfield", "Loose-meat sandwiches since 1924.", 0, "o", "r:springfield"],
+    ["Route 66 Twin Drive-In", "Springfield", "An outdoor movie theater on the old road.", 0, "o", "r:springfield"],
+    ["Auburn brick road", "Auburn", "About a mile and a half of 1931 brick pavement.", 0, "v", "r:auburn"],
+    ["Ariston Café", "Litchfield", "A family-run café on Route 66 since the 1930s.", 1, "o", "r:litchfield"],
+    ["Litchfield Museum & Route 66 Welcome Center", "Litchfield", "Local and road history across from the Ariston.", 0, "o", "r:litchfield"],
+    ["Sky View Drive-In", "Litchfield", "Showing movies since 1950.", 0, "o", "r:litchfield"],
+    ["Soulsby's Shell Station", "Mount Olive", "A 1926 station run by one family for decades.", 1, "v", "r:mount-olive"],
+    ["Pink Elephant Antique Mall", "Livingston", "Pink elephants, a fiberglass giant and a UFO.", 0, "o", "r:livingston"],
+    ["Henry's Rabbit Ranch", "Staunton", "Old trucks and VW Rabbits. Reopened in October 2026 under new owners.", 0, "o", "r:staunton"],
+    ["World's Largest Catsup Bottle", "Collinsville", "A 170-foot water tower shaped like a catsup bottle.", 1, "v", "r:collinsville"],
+    ["Cahokia Mounds", "Collinsville", "Ancient city of earthen mounds, a World Heritage Site.", 1, "o", "https://cahokiamounds.org/"],
+    ["Luna Café", "Mitchell", "A 1924 roadhouse with a neon cherry in its martini glass.", 0, "o", "r:mitchell"]
+  ],
+  MO: [
+    ["Chain of Rocks Bridge", "St. Louis", "A mile-long walking bridge with a 22-degree bend. Enter from the Missouri side in 2026.", 1, "v", "r:saint-louis"],
+    ["Gateway Arch", "St. Louis", "The 630-foot arch on the Mississippi riverfront.", 1, "o", "https://www.gatewayarch.com/"],
+    ["Ted Drewes Frozen Custard", "St. Louis", "Concretes served upside down since 1941.", 1, "o", "https://www.teddrewes.com/"],
+    ["Donut Drive-In", "St. Louis", "A 1950s donut stand with a vintage neon sign.", 0, "o", "r:saint-louis"],
+    ["Big Chief Roadhouse", "Wildwood", "A 1929 Spanish Mission-style roadhouse hotel, now a restaurant.", 0, "o", "r:wildwood"],
+    ["Route 66 State Park", "Eureka", "Built on the site of Times Beach, with a 1935 roadhouse visitor center.", 1, "o", "https://mostateparks.com/park/route-66-state-park"],
+    ["Meramec River Route 66 Bridge", "Eureka", "A 1931 steel bridge, closed to traffic.", 0, "v", "r:eureka"],
+    ["Red Cedar Inn Museum & Visitor Center", "Pacific", "A 1934 log roadhouse, reopened as a museum in 2023.", 1, "o", "https://pacificmo.gov/324/Red-Cedar-Inn-Museum-Visitor-Center"],
+    ["Meramec Caverns barn", "St. Clair", "One of the painted barn ads for the caverns.", 0, "v", "r:st-clair"],
+    ["Meramec Caverns", "Stanton", "The cave advertised on barns across the Midwest.", 1, "o", "https://www.americascave.com/"],
+    ["Bourbon water tower", "Bourbon", "A water tower with the town's name painted big.", 0, "v", "r:bourbon"],
+    ["Wagon Wheel Motel", "Cuba", "Stone cottages from the 1930s, still renting rooms.", 1, "o", "r:cuba"],
+    ["Cuba murals", "Cuba", "Missouri's Route 66 Mural City.", 1, "v", "r:cuba"],
+    ["Missouri Hick Bar-B-Que", "Cuba", "Barbecue in a log building on the old road.", 0, "o", "r:cuba"],
+    ["World's Largest Rocking Chair", "Fanning", "A 42-foot steel rocker at the Fanning 66 Outpost.", 1, "o", "r:fanning"],
+    ["St. James Winery", "St. James", "Missouri wine country along the old road.", 0, "o", "r:st-james"],
+    ["Mini Stonehenge", "Rolla", "A half-size Stonehenge at Missouri S&T.", 0, "v", "r:rolla"],
+    ["Totem Pole Trading Post", "Rolla", "A Route 66 souvenir shop since the 1930s.", 0, "o", "r:rolla"],
+    ["Hooker Cut", "Hooker", "A 1945 four-lane cut through the Ozark rock.", 0, "v", "r:hooker"],
+    ["Devils Elbow Bridge", "Devils Elbow", "A 1923 steel truss over the Big Piney River.", 1, "v", "r:devils-elbow"],
+    ["Elbow Inn", "Devils Elbow", "A 1929 roadhouse, closed for restoration.", 0, "v", "r:devils-elbow"],
+    ["Uranus General Store", "St. Robert", "A fudge shop and roadside stop with a muffler man.", 0, "o", "r:st-robert"],
+    ["Fort Leonard Wood museums", "Fort Leonard Wood", "Army engineer, military police and chemical corps museums.", 0, "o", "r:st-robert"],
+    ["Old Stagecoach Stop", "Waynesville", "A house museum that served travelers for over a century.", 0, "o", "r:waynesville"],
+    ["Trail of Tears memorial", "Waynesville", "Laughlin Park marks a Cherokee campsite from 1837.", 0, "v", "r:waynesville"],
+    ["Gasconade River Bridge", "Hazelgreen", "A 1924 truss bridge, closed to traffic.", 0, "v", "r:hazelgreen"],
+    ["Munger Moss Motel sign", "Lebanon", "The famous neon sign, now kept by the city. The motel is closed.", 1, "v", "r:lebanon"],
+    ["Route 66 Museum", "Lebanon", "Inside the Lebanon-Laclede County Library.", 0, "o", "r:lebanon"],
+    ["Wrink's Market", "Lebanon", "A roadside grocery that opened in 1950.", 0, "v", "r:lebanon"],
+    ["Hubble telescope replica", "Marshfield", "A quarter-size Hubble in astronomer Edwin Hubble's hometown.", 0, "v", "r:marshfield"],
+    ["Birthplace of Route 66 Roadside Park", "Springfield", "Where the number 66 was proposed in 1926.", 1, "v", "r:springfield-mo"],
+    ["Route 66 Car Museum", "Springfield", "Dozens of classic cars. Plans to close in April 2027.", 1, "o", "r:springfield-mo"],
+    ["Gillioz Theatre", "Springfield", "A 1926 theater, as old as Route 66.", 0, "o", "r:springfield-mo"],
+    ["Abou Ben Adhem Shrine Mosque", "Springfield", "A 1923 Moorish-style auditorium.", 0, "v", "r:springfield-mo"],
+    ["Rail Haven Motel", "Springfield", "Cottages from 1938, still hosting guests.", 0, "o", "r:springfield-mo"],
+    ["Route 66 Springfield Visitor Center", "Springfield", "Maps, stories and a restored neon sign.", 0, "o", "r:springfield-mo"],
+    ["Gary's Gay Parita", "Paris Springs", "A recreated 1930s Sinclair station.", 1, "v", "r:paris-springs"],
+    ["Spencer", "Spencer", "A restored crossroads with a 1926 bridge and old station.", 0, "v", "r:spencer"],
+    ["66 Drive-In Theatre", "Carthage", "Showing movies since 1949.", 1, "o", "r:carthage"],
+    ["Boots Court Motel", "Carthage", "A 1939 Streamline Moderne motel with green neon.", 1, "o", "https://www.bootscourt.com/"],
+    ["Jasper County Courthouse", "Carthage", "A castle-like 1895 stone courthouse.", 0, "o", "r:carthage"],
+    ["Red Oak II", "Carthage", "Artist Lowell Davis's re-created 1930s village.", 1, "v", "r:carthage"],
+    ["Praying Hands", "Webb City", "A 32-foot sculpture in King Jack Park.", 0, "v", "r:webb-city"],
+    ["Bonnie and Clyde Garage Apartment", "Joplin", "Site of the gang's 1933 shootout.", 0, "v", "r:joplin"],
+    ["Joplin Route 66 mural", "Joplin", "A mural of the road's history downtown.", 0, "v", "r:joplin"]
+  ],
+  KS: [
+    ["Cars on the Route", "Galena", "A restored Kan-O-Tex station with the truck that inspired Mater.", 1, "o", "r:galena"],
+    ["Galena Mining & Historical Museum", "Galena", "Lead and zinc mining history in an old depot.", 0, "o", "r:galena"],
+    ["Galena Historic District", "Galena", "Brick storefronts and murals along Main Street.", 0, "v", "r:galena"],
+    ["Nelson's Old Riverton Store", "Riverton", "A working general store since 1925.", 1, "o", "r:riverton"],
+    ["Rainbow Bridge", "Riverton", "A 1923 concrete arch bridge, the last of three on Kansas 66.", 1, "v", "r:riverton"],
+    ["Kansas Route 66 Visitor Center", "Baxter Springs", "In a restored 1930 Independent Oil & Gas station.", 1, "o", "r:baxter-springs"],
+    ["Baxter Springs Heritage Center", "Baxter Springs", "Local history from the Civil War to Route 66.", 1, "o", "r:baxter-springs"],
+    ["Fort Blair site", "Baxter Springs", "Where the Baxter Springs Massacre happened in 1863.", 0, "v", "r:baxter-springs"],
+    ["Ritz Theatre sign", "Baxter Springs", "A vintage neon theater sign downtown.", 0, "v", "r:baxter-springs"],
+    ["Old bank building", "Baxter Springs", "Jesse James is said to have robbed it in 1876. Now closed.", 0, "v", "r:baxter-springs"]
+  ],
+  OK: [
+    ["Spook Light", "Near Quapaw", "A mysterious light seen at night near the state line.", 0, "v", "r:quapaw"],
+    ["Dallas' Dairyette", "Quapaw", "A small-town burger stand on the route.", 0, "o", "r:quapaw"],
+    ["Mickey Mantle's boyhood home", "Commerce", "Where the Yankees star grew up.", 0, "v", "r:commerce"],
+    ["Allen's Conoco Fillin' Station", "Commerce", "A tiny station built into the corner of a building.", 0, "v", "r:commerce"],
+    ["Coleman Theatre", "Miami", "A 1929 Spanish Revival theater with its original pipe organ.", 1, "o", "https://www.colemantheatre.org/"],
+    ["Waylan's Ku-Ku Burger", "Miami", "A 1965 burger stand with a giant cuckoo bird.", 1, "o", "r:miami"],
+    ["Marathon Oil station", "Miami", "A restored 1929 station.", 0, "v", "r:miami"],
+    ["Sidewalk Highway", "Near Miami", "Nine-foot-wide original pavement from 1922.", 1, "v", "r:ribbon-road-us66"],
+    ["Buffalo Ranch", "Afton", "A trading post and travel stop on the route.", 0, "o", "r:afton"],
+    ["Afton Station", "Afton", "A former D-X station and Packard museum. Now closed.", 0, "v", "r:afton"],
+    ["Clanton's Café", "Vinita", "A family café serving travelers since 1927.", 0, "o", "r:vinita"],
+    ["Hi-Way Cafe", "Vinita", "A diner guarded by muffler men.", 0, "o", "r:vinita"],
+    ["Little Cabin Creek Bridge", "Vinita", "A historic 1930s bridge.", 0, "v", "r:vinita"],
+    ["Pryor Creek Bridge", "Chelsea", "A 1926 steel truss bridge.", 0, "v", "r:chelsea"],
+    ["Hogue House", "Chelsea", "A 1913 Sears mail-order kit house.", 0, "v", "r:chelsea"],
+    ["Totem Pole Park", "Foyil", "Ed Galloway's 90-foot concrete totem pole.", 1, "o", "r:foyil"],
+    ["Andy Payne statue", "Foyil", "Honoring the hometown winner of the 1928 Bunion Derby.", 0, "v", "r:foyil"],
+    ["Foyil Filling Station", "Foyil", "A 1920s station on the original road.", 0, "v", "r:foyil"],
+    ["Will Rogers Memorial Museum", "Claremore", "The life of Oklahoma's favorite son.", 1, "o", "https://www.willrogers.com/"],
+    ["J.M. Davis Arms & Historical Museum", "Claremore", "One of the world's largest private gun collections.", 0, "o", "r:claremore"],
+    ["Blue Whale of Catoosa", "Catoosa", "A smiling whale in a pond.", 1, "v", "r:catoosa"],
+    ["Cyrus Avery Centennial Plaza", "Tulsa", "Honoring the Father of Route 66.", 1, "v", "r:tulsa"],
+    ["Route 66 Rising", "Tulsa", "A giant metal sculpture of the 66 shield.", 0, "v", "r:tulsa"],
+    ["Buck Atom's Cosmic Curios", "Tulsa", "A space cowboy giant and souvenirs.", 1, "o", "r:tulsa"],
+    ["Stella the Space Cowgirl", "Tulsa", "Buck Atom's partner, a muffler-man-style giant.", 0, "v", "r:tulsa"],
+    ["Meadow Gold sign", "Tulsa", "A restored neon dairy sign on 11th Street.", 0, "v", "r:tulsa"],
+    ["Mother Road Market", "Tulsa", "A food hall on 11th Street.", 0, "o", "r:tulsa"],
+    ["Circle Cinema", "Tulsa", "A 1928 movie theater, still showing films.", 0, "o", "r:tulsa"],
+    ["Vickery Phillips 66", "Tulsa", "A restored cottage-style station.", 0, "v", "r:tulsa"],
+    ["Blue Dome", "Tulsa", "A 1924 gas station with a blue dome, center of a nightlife district.", 0, "v", "r:tulsa"],
+    ["Route 66 Historical Village", "Tulsa", "A train, an oil derrick and a 1920s station.", 0, "v", "r:tulsa"],
+    ["Tally's Good Food Café", "Tulsa", "A classic diner on old 66.", 0, "o", "r:tulsa"],
+    ["Heart of Route 66 Auto Museum", "Sapulpa", "Classic cars beside a 66-foot gas pump.", 0, "o", "r:sapulpa"],
+    ["Rock Creek Bridge", "Sapulpa", "A 1921 truss bridge with a brick deck.", 0, "v", "r:sapulpa"],
+    ["Bristow historic district", "Bristow", "Old car dealerships and service stations.", 0, "v", "r:bristow"],
+    ["Rock Café", "Stroud", "Built in 1939 from road-construction sandstone.", 1, "o", "r:stroud"],
+    ["Skyliner Motel", "Stroud", "A motel with a restored neon sign.", 0, "v", "r:stroud"],
+    ["Davenport brick street and murals", "Davenport", "Brick-paved Broadway and the tallest mural on 66.", 0, "v", "r:davenport"],
+    ["Route 66 Interpretive Center", "Chandler", "Road history inside a 1936 stone armory.", 1, "o", "r:chandler"],
+    ["Phillips 66 station", "Chandler", "A restored 1930 cottage-style station.", 0, "v", "r:chandler"],
+    ["Lincoln Motel", "Chandler", "Vintage cabins still renting rooms.", 0, "o", "r:chandler"],
+    ["Seaba Station Motorcycle Museum", "Warwick", "Motorcycles in a 1921 filling station.", 1, "o", "r:warwick"],
+    ["Threatt Filling Station", "Luther", "A Black family-owned station from the 1910s, on the National Register.", 0, "v", "r:luther"],
+    ["POPS", "Arcadia", "The 66-foot neon soda bottle.", 1, "o", "https://pops66.com/"],
+    ["Arcadia Round Barn", "Arcadia", "A round wooden barn from 1898.", 1, "o", "r:arcadia"],
+    ["Milk Bottle Grocery", "Oklahoma City", "A tiny 1930 store with a giant milk bottle on its roof.", 1, "v", "r:oklahoma-city"],
+    ["Oklahoma City National Memorial", "Oklahoma City", "Remembering the 1995 bombing.", 1, "o", "https://memorialmuseum.com/"],
+    ["Tower Theatre", "Oklahoma City", "A 1937 theater with a glowing neon tower.", 0, "o", "r:oklahoma-city"],
+    ["Lake Overholser Bridge", "Oklahoma City", "A 1925 steel truss bridge.", 0, "v", "r:oklahoma-city"],
+    ["Yukon's Best Flour sign", "Yukon", "A giant neon sign on the old mill.", 0, "v", "r:yukon"],
+    ["Czech Hall", "Yukon", "A historic dance hall.", 0, "o", "r:yukon"],
+    ["Robert's Grill and Sid's Diner", "El Reno", "Fried onion burgers, a local tradition.", 1, "o", "r:el-reno"],
+    ["Fort Reno", "El Reno", "An 1874 cavalry post with a visitor center.", 0, "o", "r:el-reno"],
+    ["Pony Bridge", "Bridgeport", "A 1933 bridge with 38 truss spans over the Canadian River.", 0, "v", "r:bridgeport"],
+    ["Lucille's", "Hydro", "A 1929 two-story gas station.", 1, "v", "r:hydro"],
+    ["Stafford Air & Space Museum", "Weatherford", "Named for astronaut Thomas Stafford.", 1, "o", "r:weatherford"],
+    ["Lucille's Roadhouse", "Weatherford", "A diner styled after the Hydro station.", 0, "o", "r:weatherford"],
+    ["Oklahoma Route 66 Museum", "Clinton", "Six decades of the road, decade by decade.", 1, "o", "https://www.okhistory.org/sites/route66"],
+    ["National Route 66 & Transportation Museum", "Elk City", "A recreated small town of road history.", 1, "o", "r:elk-city"],
+    ["Beckham County Courthouse", "Sayre", "Seen in the film The Grapes of Wrath.", 0, "v", "r:sayre"],
+    ["100th Meridian Museum", "Erick", "Local history in the old Roger Miller Museum building.", 0, "o", "r:erick"],
+    ["Sandhills Curiosity Shop", "Erick", "A one-of-a-kind music stop. Call ahead.", 0, "v", "r:erick"],
+    ["Texola", "Texola", "A near-ghost town on the Texas line.", 0, "r", "r:texola"]
+  ],
+  TX: [
+    ["U-Drop Inn", "Shamrock", "The 1936 Art Deco station from Cars, now a visitor center.", 1, "o", "r:shamrock"],
+    ["Pioneer West Museum", "Shamrock", "Local history in an old hotel.", 0, "o", "r:shamrock"],
+    ["Devil's Rope Museum", "McLean", "Barbed wire and Route 66 history.", 1, "o", "r:mclean"],
+    ["Phillips 66 station", "McLean", "The state's first Phillips 66, from 1929.", 1, "v", "r:mclean"],
+    ["66 Super Service", "Alanreed", "A restored 1930 Texaco station.", 0, "v", "r:alanreed"],
+    ["Jericho Gap", "Jericho", "A stretch of early road once famous for its mud.", 0, "v", "r:jericho"],
+    ["Leaning water tower", "Groom", "Tilted on purpose to stop traffic.", 1, "v", "r:groom"],
+    ["Cross of Our Lord Jesus Christ", "Groom", "A 19-story cross with life-size Stations of the Cross.", 1, "o", "r:groom"],
+    ["Bug Ranch", "Conway", "Buried Volkswagen Beetles, ready for paint.", 0, "v", "r:conway"],
+    ["Sixth Street Historic District", "Amarillo", "Amarillo's original stretch of 66, full of antique shops.", 1, "o", "r:amarillo"],
+    ["Big Texan Steak Ranch", "Amarillo", "Home of the 72-ounce steak challenge.", 1, "o", "https://www.bigtexan.com/"],
+    ["Cadillac Ranch", "Amarillo", "Ten spray-painted Cadillacs, nose-down in a field.", 1, "v", "r:amarillo"],
+    ["Magnolia gas station", "Vega", "A restored 1920s station.", 0, "v", "r:vega"],
+    ["Milburn-Price Culture Museum", "Vega", "Local history and Route 66 exhibits.", 0, "o", "r:vega"],
+    ["MidPoint Café", "Adrian", "Halfway between Chicago and Los Angeles. Owners change; call ahead.", 1, "o", "r:adrian"],
+    ["Midpoint sign", "Adrian", "1,139 miles to each end.", 1, "v", "r:adrian"],
+    ["Glenrio", "Glenrio", "A ghost town straddling the Texas–New Mexico line.", 0, "r", "r:glenrio"]
+  ],
+  NM: [
+    ["Tucumcari murals", "Tucumcari", "Dozens of painted walls around town.", 1, "v", "r:tucumcari"],
+    ["Blue Swallow Motel", "Tucumcari", "Neon from 1939.", 1, "o", "https://www.blueswallowmotel.com/"],
+    ["Tee Pee Curios", "Tucumcari", "A souvenir shop with a concrete teepee entrance.", 0, "o", "r:tucumcari"],
+    ["Motel Safari", "Tucumcari", "A restored 1959 motel with a camel on its sign.", 0, "o", "r:tucumcari"],
+    ["Odeon Theatre", "Tucumcari", "A 1936 movie theater downtown.", 0, "o", "r:tucumcari"],
+    ["New Mexico Route 66 Museum", "Tucumcari", "Cars, signs and road memorabilia.", 0, "o", "r:tucumcari"],
+    ["Mesalands Dinosaur Museum", "Tucumcari", "Bronze skeletons and real fossils.", 0, "o", "r:tucumcari"],
+    ["Blue Hole", "Santa Rosa", "A deep, clear spring popular with divers.", 1, "o", "r:santa-rosa"],
+    ["Route 66 Auto Museum", "Santa Rosa", "Classic cars and hot rods.", 1, "o", "r:santa-rosa"],
+    ["Joseph's Bar & Grill", "Santa Rosa", "Home of the Fat Man sign.", 0, "o", "r:santa-rosa"],
+    ["Park Lake", "Santa Rosa", "A free spring-fed swimming lake.", 0, "o", "r:santa-rosa"],
+    ["Plaza Hotel", "Las Vegas", "An 1882 hotel on the 1926 to 1937 Santa Fe loop.", 0, "o", "r:las-vegas"],
+    ["Pecos National Historical Park", "Pecos", "Pueblo and mission ruins on the original route.", 0, "o", "https://www.nps.gov/peco/"],
+    ["Glorieta Pass Battlefield", "Glorieta", "Site of an 1862 Civil War battle.", 0, "v", "r:glorieta"],
+    ["Santa Fe Plaza", "Santa Fe", "The heart of town on the original route.", 1, "v", "r:santa-fe"],
+    ["Palace of the Governors", "Santa Fe", "A 1610 adobe, the oldest public building in the U.S.", 1, "o", "r:santa-fe"],
+    ["Loretto Chapel", "Santa Fe", "Home of a spiral staircase with no center support.", 0, "o", "https://www.lorettochapel.com/"],
+    ["San Miguel Chapel", "Santa Fe", "Often called the oldest church in the U.S.", 0, "o", "r:santa-fe"],
+    ["Cathedral Basilica of St. Francis of Assisi", "Santa Fe", "An 1880s stone cathedral.", 0, "o", "r:santa-fe"],
+    ["La Bajada Hill", "Near Santa Fe", "The old switchbacks of the early road.", 0, "v", "r:santa-fe"],
+    ["Santo Domingo Trading Post", "Santo Domingo", "A restored historic trading post.", 0, "o", "r:santo-domingo"],
+    ["Coronado Historic Site", "Bernalillo", "Kuaua Pueblo ruins and painted kiva murals.", 0, "o", "r:bernalillo"],
+    ["San Agustín de la Isleta Mission", "Isleta", "One of the oldest missions in the U.S.", 0, "o", "r:isleta"],
+    ["Luna Mansion", "Los Lunas", "An 1881 Southern-style adobe mansion. The restaurant closed in 2020.", 0, "v", "r:los-lunas"],
+    ["Clines Corners", "Clines Corners", "A giant travel stop and souvenir shop since 1934.", 0, "o", "r:clines-corners"],
+    ["Whiting Bros. station", "Moriarty", "The last operating Whiting Bros. gas station.", 0, "o", "r:moriarty"],
+    ["Musical Highway", "Tijeras", "Drive 45 mph and the rumble strips play America the Beautiful.", 0, "v", "r:tijeras"],
+    ["Central Avenue", "Albuquerque", "About 18 miles of motels, diners and neon.", 1, "v", "r:albuquerque"],
+    ["KiMo Theatre", "Albuquerque", "A 1927 Pueblo Deco movie palace.", 1, "o", "r:albuquerque"],
+    ["Maisel's Indian Trading Post", "Albuquerque", "A 1939 storefront with Native American murals.", 0, "v", "r:albuquerque"],
+    ["De Anza Motor Lodge", "Albuquerque", "A 1939 motor court with a restored sign.", 0, "v", "r:albuquerque"],
+    ["Nob Hill", "Albuquerque", "A 1947 shopping center and neon-lit neighborhood.", 0, "v", "r:albuquerque"],
+    ["Old Town Albuquerque", "Albuquerque", "The 1706 plaza and San Felipe de Neri Church.", 1, "o", "r:albuquerque"],
+    ["Albuquerque Museum", "Albuquerque", "Art and history beside Old Town.", 0, "o", "r:albuquerque"],
+    ["Sandia Peak Tramway", "Albuquerque", "A long aerial tram to the top of the Sandias.", 1, "o", "https://sandiapeak.com/"],
+    ["El Vado Motel", "Albuquerque", "A restored 1937 motor court.", 0, "o", "r:albuquerque"],
+    ["Rio Puerco Bridge", "Suwanee", "A 1933 steel truss bridge.", 0, "v", "r:suwanee"],
+    ["Owl Rock", "Mesita", "A rock formation shaped like an owl.", 0, "v", "r:mesita"],
+    ["Laguna Pueblo", "Laguna", "Home of the 1699 San José de Laguna mission church.", 0, "v", "r:laguna"],
+    ["Acoma Sky City", "Near Acoma", "A pueblo atop a mesa, lived in for about 1,000 years.", 1, "o", "r:paraje"],
+    ["Villa de Cubero", "Cubero", "A trading post where Ernest Hemingway is said to have written.", 0, "o", "r:cubero"],
+    ["Santa Maria de Acoma mission", "McCartys", "A small stone church above the lava flows.", 0, "v", "r:mccartys"],
+    ["New Mexico Mining Museum", "Grants", "Walk through a recreated uranium mine.", 0, "o", "r:grants"],
+    ["El Malpais National Monument", "Grants", "Lava flows, lava tubes and La Ventana Arch.", 1, "o", "https://www.nps.gov/elma/"],
+    ["El Morro National Monument", "Near Grants", "Inscription Rock, signed by travelers for centuries.", 0, "o", "https://www.nps.gov/elmo/"],
+    ["Continental Divide", "Continental Divide", "Where rain splits between the Atlantic and Pacific.", 0, "v", "r:continental-divide"],
+    ["Fort Wingate", "Wingate", "A historic army post.", 0, "v", "r:wingate"],
+    ["El Rancho Hotel", "Gallup", "The 1937 hotel where Hollywood stars stayed.", 1, "o", "r:gallup"],
+    ["Richardson's Trading Company", "Gallup", "A Native American trading post since 1913.", 0, "o", "r:gallup"],
+    ["Gallup Cultural Center", "Gallup", "Navajo and Zuni culture in the old train depot.", 0, "o", "r:gallup"],
+    ["El Morro Theatre", "Gallup", "A 1928 Spanish Colonial Revival theater.", 0, "o", "r:gallup"],
+    ["Gallup murals", "Gallup", "Downtown walls painted by local artists.", 0, "v", "r:gallup"]
+  ],
+  AZ: [
+    ["Painted Cliffs", "Lupton", "Red cliffs and trading posts at the state line.", 0, "v", "r:lupton"],
+    ["Fort Courage", "Houck", "A replica fort from the TV show F Troop.", 0, "r", "r:houck"],
+    ["Painted Desert Inn", "Petrified Forest", "A Pueblo Revival inn with Mary Colter interiors.", 1, "o", "https://www.nps.gov/pefo/"],
+    ["Petrified Forest National Park", "Near Holbrook", "Painted Desert views and the old 1932 Studebaker.", 1, "o", "https://www.nps.gov/pefo/"],
+    ["Wigwam Motel", "Holbrook", "Teepee rooms from 1950.", 1, "o", "r:holbrook"],
+    ["Rainbow Rock Shop dinosaurs", "Holbrook", "Giant concrete dinosaurs outside a rock shop.", 0, "o", "r:holbrook"],
+    ["Navajo County Historical Museum", "Holbrook", "In the old courthouse, with its own jail.", 0, "o", "r:holbrook"],
+    ["Bucket of Blood Saloon", "Holbrook", "An old Wild West saloon building.", 0, "v", "r:holbrook"],
+    ["Joe & Aggie's Cafe mural", "Holbrook", "The café closed in 2020, but its pink Route 66 mural remains.", 0, "v", "r:holbrook"],
+    ["Jack Rabbit Trading Post", "Joseph City", "Home of the \"HERE IT IS\" sign.", 1, "o", "r:joseph-city"],
+    ["Homolovi State Park", "Winslow", "Ancestral Hopi village ruins.", 0, "o", "https://azstateparks.com/homolovi"],
+    ["Standin' on the Corner Park", "Winslow", "The corner from the Eagles song.", 1, "v", "r:winslow"],
+    ["La Posada Hotel", "Winslow", "Mary Colter's 1930 railway hotel.", 1, "o", "https://www.laposada.org/"],
+    ["Old Trails Museum", "Winslow", "Local and Route 66 history downtown.", 0, "o", "r:winslow"],
+    ["Meteor City Trading Post", "Meteor City", "A dome-shaped trading post, reopened in 2025.", 0, "o", "r:meteor-city"],
+    ["Meteor Crater", "Near Winslow", "A mile-wide crater from an impact about 50,000 years ago.", 1, "o", "https://meteorcrater.com/"],
+    ["Two Guns", "Two Guns", "Ruins of an old roadside zoo and trading post.", 0, "r", "r:two-guns"],
+    ["Twin Arrows", "Twin Arrows", "Two giant arrows at an abandoned trading post.", 0, "r", "r:twin-arrows"],
+    ["Walnut Canyon National Monument", "Near Flagstaff", "Cliff dwellings in a forested canyon.", 0, "o", "https://www.nps.gov/waca/"],
+    ["Museum Club", "Flagstaff", "A 1931 log roadhouse called \"The Zoo.\" Closed and for sale.", 0, "v", "r:flagstaff"],
+    ["Lowell Observatory", "Flagstaff", "Where Pluto was discovered in 1930.", 1, "o", "https://lowell.edu/"],
+    ["Museum of Northern Arizona", "Flagstaff", "Native art, geology and natural history.", 0, "o", "https://musnaz.org/"],
+    ["Flagstaff Visitor Center", "Flagstaff", "In the 1926 train depot downtown.", 0, "o", "r:flagstaff"],
+    ["Monte Vista Hotel", "Flagstaff", "A 1927 hotel with a rooftop neon sign.", 0, "o", "r:flagstaff"],
+    ["Historic downtown Williams", "Williams", "The last Route 66 town bypassed.", 1, "v", "r:williams"],
+    ["Grand Canyon Railway", "Williams", "Trains to the Grand Canyon since 1901.", 1, "o", "https://www.thetrain.com/"],
+    ["Pete's Gas Station Museum", "Williams", "A restored station full of memorabilia.", 0, "o", "r:williams"],
+    ["Bearizona", "Williams", "A drive-through wildlife park.", 0, "o", "https://bearizona.com/"],
+    ["Ash Fork Route 66 Museum", "Ash Fork", "In the Flagstone Capital of the USA.", 0, "o", "r:ash-fork"],
+    ["DeSoto's Beauty & Barber Shop", "Ash Fork", "An old station with a classic car on its roof.", 0, "v", "r:ash-fork"],
+    ["Angel & Vilma Delgadillo's Gift Shop", "Seligman", "Angel's old barbershop, where the Route 66 revival began.", 1, "o", "r:seligman"],
+    ["Snow Cap Drive-In", "Seligman", "Burgers and pranks since 1953.", 1, "o", "r:seligman"],
+    ["Roadkill Café", "Seligman", "A joke-filled Western restaurant on Main Street.", 0, "o", "r:seligman"],
+    ["Burma-Shave signs", "Seligman to Kingman", "Replica rhyming roadside signs.", 0, "v", "r:seligman"],
+    ["Grand Canyon Caverns", "Peach Springs", "Dry caverns 21 stories underground.", 1, "o", "https://gccaverns.com/"],
+    ["Hualapai Lodge", "Peach Springs", "On the Hualapai Reservation, gateway to Grand Canyon West.", 0, "o", "r:peach-springs"],
+    ["Frontier Motel", "Truxton", "A 1950s motel with a classic sign.", 0, "v", "r:truxton"],
+    ["Hackberry General Store", "Hackberry", "A roadside store packed with vintage signs and cars.", 1, "o", "r:hackberry"],
+    ["Giganticus Headicus", "Antares", "A giant green tiki-style head.", 0, "v", "r:antares"],
+    ["Powerhouse Visitor Center", "Kingman", "Home of the Arizona Route 66 Museum.", 1, "o", "r:kingman"],
+    ["Mohave Museum of History & Arts", "Kingman", "Regional history and Andy Devine exhibits.", 0, "o", "r:kingman"],
+    ["Mr. D'z Route 66 Diner", "Kingman", "A pink-and-turquoise diner with homemade root beer.", 0, "o", "r:kingman"],
+    ["El Trovatore Motel", "Kingman", "A 1939 motel with the longest Route 66 mural.", 0, "o", "r:kingman"],
+    ["Locomotive Park", "Kingman", "A 1928 Santa Fe steam engine.", 0, "v", "r:kingman"],
+    ["Cool Springs Station", "Cool Springs", "A rebuilt stone station below Sitgreaves Pass.", 0, "o", "r:kingman"],
+    ["Sitgreaves Pass", "Near Oatman", "Hairpin curves over the Black Mountains.", 1, "v", "r:oatman"],
+    ["Gold Road Mine", "Goldroad", "Underground gold mine tours.", 0, "o", "r:oatman"],
+    ["Oatman", "Oatman", "An old gold town where wild burros walk the streets.", 1, "o", "r:oatman"],
+    ["Oatman Hotel", "Oatman", "Walls covered in dollar bills.", 0, "o", "r:oatman"],
+    ["Old Trails Bridge", "Topock", "A 1916 arch bridge that carried 66 over the Colorado.", 0, "v", "r:topock"]
+  ],
+  CA: [
+    ["Route 66 Motel sign", "Needles", "A classic neon sign at the California line.", 0, "v", "r:needles"],
+    ["El Garces Harvey House", "Needles", "A restored 1908 railroad hotel.", 0, "v", "r:needles"],
+    ["Needles Regional Museum", "Needles", "Desert and railroad history.", 0, "o", "r:needles"],
+    ["Goffs Schoolhouse", "Goffs", "A 1914 desert schoolhouse and museum.", 0, "o", "r:goffs"],
+    ["Essex and Chambless", "Essex", "Desert ghost towns. The road west of Fenner is closed.", 0, "r", "r:essex"],
+    ["Roy's Motel and Café", "Amboy", "The boomerang sign in the Mojave. Gas and snacks sold.", 1, "o", "r:amboy"],
+    ["Amboy Crater", "Amboy", "A young volcanic cinder cone you can hike.", 1, "o", "r:amboy"],
+    ["Bagdad", "Bagdad", "A vanished town that inspired a famous film title.", 0, "r", "r:bagdad"],
+    ["Ludlow Café", "Ludlow", "A desert café near the I-40 exit.", 0, "o", "r:ludlow"],
+    ["Bagdad Cafe", "Newberry Springs", "The diner from the 1987 film. Its future is uncertain.", 1, "o", "r:newberry"],
+    ["Stone Hotel", "Daggett", "An 1880s hotel from the mining days.", 0, "v", "r:daggett"],
+    ["Calico Ghost Town", "Near Yermo", "An 1881 silver mining town.", 1, "o", "r:daggett"],
+    ["Route 66 Mother Road Museum", "Barstow", "Inside the 1911 Casa del Desierto Harvey House.", 1, "o", "r:barstow"],
+    ["Barstow Station", "Barstow", "Fast food served in old railroad cars.", 0, "o", "r:barstow"],
+    ["Skyline Drive-In", "Barstow", "A desert drive-in theater.", 0, "o", "r:barstow"],
+    ["Elmer's Bottle Tree Ranch", "Oro Grande", "A desert forest of glass-bottle trees.", 1, "v", "r:helendale"],
+    ["Iron Hog Saloon", "Oro Grande", "A biker bar in an old roadhouse.", 0, "o", "r:oro-grande"],
+    ["California Route 66 Museum", "Victorville", "Murals, old signs and road memorabilia.", 1, "o", "r:victorville"],
+    ["Emma Jean's Holland Burger Café", "Victorville", "A diner on the road since 1947.", 0, "o", "r:victorville"],
+    ["Cajon Pass", "Cajon Pass", "The climb over the San Andreas Fault into the valley.", 0, "v", "r:cajon-pass"],
+    ["Wigwam Motel", "San Bernardino", "Concrete teepee rooms from 1949.", 1, "o", "r:san-bernardino"],
+    ["First McDonald's Museum", "San Bernardino", "The site of the McDonald brothers' 1940 restaurant.", 1, "o", "r:san-bernardino"],
+    ["Bono's Restaurant", "Fontana", "Italian deli whose giant orange stand is being restored.", 0, "o", "r:fontana"],
+    ["Cucamonga Service Station", "Rancho Cucamonga", "A restored 1915 station.", 1, "o", "r:rancho-cucamonga"],
+    ["Sycamore Inn", "Rancho Cucamonga", "A steakhouse on a stagecoach stop site since 1848.", 0, "o", "r:rancho-cucamonga"],
+    ["Madonna of the Trail", "Upland", "A 1929 statue honoring pioneer women.", 0, "v", "r:upland"],
+    ["Pomona Fox Theater", "Pomona", "A 1931 Art Deco theater.", 0, "o", "r:pomona"],
+    ["The Hat", "Glendora", "Pastrami sandwiches on Route 66.", 0, "o", "r:glendora"],
+    ["Aztec Hotel", "Monrovia", "A 1925 hotel in Mayan Revival style.", 0, "v", "r:monrovia"],
+    ["Santa Anita Park", "Arcadia", "A 1934 horse racing track.", 0, "o", "r:arcadia-ca"],
+    ["Colorado Street Bridge", "Pasadena", "A curved 1913 arch bridge.", 1, "v", "r:pasadena"],
+    ["Fair Oaks Pharmacy", "South Pasadena", "A 1915 soda fountain still serving malts.", 1, "o", "r:south-pasadena"],
+    ["Arroyo Seco Parkway", "Los Angeles", "The West's first freeway, opened in 1940.", 0, "v", "r:los-angeles"],
+    ["Chicken Boy", "Los Angeles", "A muffler man with a chicken head.", 0, "v", "r:los-angeles"],
+    ["Griffith Observatory", "Los Angeles", "Free observatory with views of the Hollywood sign.", 1, "o", "https://griffithobservatory.org/"],
+    ["TCL Chinese Theatre", "Los Angeles", "Stars' handprints in the forecourt since 1927.", 1, "o", "r:los-angeles"],
+    ["Hollywood Walk of Fame", "Los Angeles", "Over 2,700 stars along Hollywood Boulevard.", 1, "v", "r:los-angeles"],
+    ["Sunset Strip", "West Hollywood", "Route 66 once ran along Sunset Boulevard.", 0, "v", "r:west-hollywood"],
+    ["Rodeo Drive", "Beverly Hills", "The famous shopping street near the route.", 0, "v", "r:beverly-hills"],
+    ["Will Rogers Highway plaque", "Santa Monica", "A 1952 marker in Palisades Park.", 0, "v", "r:santa-monica"],
+    ["Santa Monica Pier", "Santa Monica", "The End of the Trail. The pier's arch sign is away for restoration until 2027.", 1, "o", "https://www.santamonicapier.org/"]
+  ]
+};
+
+const KICKER = { road: "The Road", roadside: "Roadside", culture: "Culture" };
+const CAT_NAME = { all: "", road: "The Road", roadside: "Roadside", culture: "Culture" };
+
+let cat = "all", state = null, order = [], pos = 0, busy = false;
+const $ = id => document.getElementById(id);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => s.replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
+
+function pool() { return FACTS.filter(f => (cat === "all" || f.c === cat) && (!state || f.s === state)); }
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function paint() {
+  const list = pool();
+  if (!list.length) {
+    $("s-kicker").textContent = CAT_NAME[cat];
+    $("s-title").textContent = `No ${CAT_NAME[cat]} stories for ${STATES[state]} yet`;
+    $("s-body").textContent = "Try All, or pick another state.";
+    $("s-link").hidden = true;
+    $("s-postmark").innerHTML = "ROUTE<span>66</span>";
+    $("s-stamp").innerHTML = `<div><div class="num">${state}</div>${STATES[state]}</div>`;
+    $("count").textContent = "0 of 0";
+    $("prev").disabled = $("next").disabled = true;
+    lightStrip(null);
+    return;
+  }
+  const f = list[order[pos]];
+  $("s-kicker").textContent = KICKER[f.c];
+  $("s-title").textContent = f.t;
+  $("s-body").textContent = f.b;
+  $("s-link").hidden = false;
+  $("s-link").href = f.l;
+  $("s-postmark").innerHTML = f.y ? `ROUTE 66<span>${f.y}</span>` : `ROUTE<span>66</span>`;
+  $("s-stamp").innerHTML = f.s ? `<div><div class="num">${f.s}</div>${STATES[f.s]}</div>` : `<div><div class="num">66</div>All 8 states</div>`;
+  $("count").textContent = `${pos + 1} of ${list.length}`;
+  $("prev").disabled = $("next").disabled = list.length < 2;
+  lightStrip(f);
+}
+function lightStrip(f) {
+  document.querySelectorAll(".st").forEach(el => {
+    const s = el.dataset.s;
+    el.setAttribute("aria-pressed", s === state);
+    el.classList.toggle("on", !state && f && (!f.s || f.s === s));
+  });
+  $("strip-label").textContent = state ? `Exploring ${STATES[state]}` : (f && f.s ? `This story: ${STATES[f.s]}` : "The whole road");
+  $("clear").hidden = !state;
+}
+function show(step) {
+  if (busy || order.length < 2) return;
+  pos = (pos + step + order.length) % order.length;
+  if (reduce) return paint();
+  busy = true;
+  const el = $("card");
+  el.classList.add("out");
+  setTimeout(() => { paint(); el.classList.remove("out"); busy = false; }, 300);
+}
+function reset() { order = shuffle([...pool().keys()]); pos = 0; paint(); }
+
+let stopMode = "top";
+const STATUS = { o: "Open to visit", v: "See from outside", r: "Ruins" };
+function paintStops() {
+  const list = $("stop-list"), pick = $("pick"), tools = $("stop-tools");
+  if (!state) {
+    $("stops-title").textContent = "Roadside stops";
+    const total = Object.values(STOPS).reduce((n, s) => n + s.length, 0);
+    $("stops-sub").textContent = `${total} stops in 8 states. Pick one`;
+    list.hidden = true; tools.hidden = true; $("no-stops").hidden = true; pick.hidden = false;
+    return;
+  }
+  const all = STOPS[state], top = all.filter(s => s[3]);
+  const q = $("stop-search").value.trim().toLowerCase();
+  // A search looks through every stop, whichever view is chosen.
+  const shown = q ? all.filter(s => (s[0] + " " + s[1]).toLowerCase().includes(q)) : (stopMode === "top" ? top : all);
+  $("stops-title").textContent = `Stops in ${STATES[state]}`;
+  $("stops-sub").textContent = `${top.length} must-see · ${all.length} total · driving west`;
+  $("mode-top").textContent = `Must-see (${top.length})`;
+  $("mode-all").textContent = `All stops (${all.length})`;
+  $("mode-top").setAttribute("aria-pressed", stopMode === "top");
+  $("mode-all").setAttribute("aria-pressed", stopMode === "all");
+  pick.hidden = true; tools.hidden = false; list.hidden = !shown.length; $("no-stops").hidden = !!shown.length;
+  list.innerHTML = shown.map(([n, town, d, star, status, link]) => {
+    const map = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(`${n}, ${town}, ${STATES[state]}`);
+    const guide = link.startsWith("r:");
+    const href = guide ? `https://www.theroute-66.com/${link.slice(2)}.html` : link;
+    const badge = star && (stopMode === "all" || q) ? `<span class="badge">Must-see</span>` : "";
+    return `<li class="stop"><div><div class="stop-head"><div class="stop-name">${esc(n)}</div>${badge}</div>` +
+      `<div class="stop-town">${esc(town)} <span class="status st-${status}">${STATUS[status]}</span></div>` +
+      `<p class="stop-desc">${esc(d)}</p>` +
+      `<div class="stop-links"><a class="stop-map" href="${href}" target="_blank" rel="noopener">${guide ? "Route 66 guide" : "Official site"}</a>` +
+      `<a class="stop-map" href="${map}" target="_blank" rel="noopener">Map</a></div></div></li>`;
+  }).join("");
+}
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { stopMode = b.dataset.mode; paintStops(); }));
+$("stop-search").addEventListener("input", paintStops);
+function setState(s) {
+  state = s;
+  stopMode = "top";
+  $("stop-search").value = "";
+  try { history.replaceState(null, "", s ? "#" + s : location.pathname); } catch (e) {}
+  reset();
+  paintStops();
+}
+
+function centennial() {
+  const day = new Date(2026, 10, 11), now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d = Math.round((day - today) / 864e5);
+  let txt;
+  if (d > 1) txt = `${d} days until Route 66 turns 100`;
+  else if (d === 1) txt = "Route 66 turns 100 tomorrow";
+  else if (d === 0) txt = "Route 66 turns 100 today";
+  else {
+    let yrs = now.getFullYear() - 1926;
+    if (now < new Date(now.getFullYear(), 10, 11)) yrs--;
+    txt = `${yrs} years on the road since 1926`;
+  }
+  $("centennial").textContent = txt;
+}
+
+$("pick").innerHTML = WEST_TO_EAST.map(s => `<button type="button" data-s="${s}">${STATES[s]}</button>`).join("");
+$("pick").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { setState(b.dataset.s); $("states").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); } });
+document.querySelectorAll(".st").forEach(b => b.addEventListener("click", () => setState(state === b.dataset.s ? null : b.dataset.s)));
+$("clear").addEventListener("click", () => setState(null));
+$("next").addEventListener("click", () => show(1));
+$("prev").addEventListener("click", () => show(-1));
+document.addEventListener("keydown", e => { if (e.key === "ArrowRight") show(1); if (e.key === "ArrowLeft") show(-1); });
+let x0 = null;
+$("card").addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+$("card").addEventListener("touchend", e => {
+  if (x0 === null) return;
+  const dx = e.changedTouches[0].clientX - x0; x0 = null;
+  if (Math.abs(dx) > 50) show(dx < 0 ? 1 : -1);
+});
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => {
+  cat = b.dataset.cat;
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-pressed", x === b));
+  reset();
+}));
+
+// The sign image has a white backdrop. Clear the white that touches the edges so the glow follows the sign's outline;
+// the white inside the sign (its border, ROUTE and 66) is never reached.
+function clearSignBackdrop(img) {
+  try {
+    const w = img.naturalWidth, h = img.naturalHeight, c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const d = ctx.getImageData(0, 0, w, h), px = d.data, seen = new Uint8Array(w * h), stack = [];
+    const light = i => Math.min(px[i * 4], px[i * 4 + 1], px[i * 4 + 2]);
+    for (let x = 0; x < w; x++) stack.push(x, (h - 1) * w + x);
+    for (let y = 0; y < h; y++) stack.push(y * w, y * w + w - 1);
+    while (stack.length) {
+      const i = stack.pop();
+      if (seen[i]) continue;
+      seen[i] = 1;
+      const v = light(i);
+      if (v < 200) continue;
+      // Fade the anti-aliased edge instead of cutting it hard.
+      px[i * 4 + 3] = v >= 238 ? 0 : Math.round(255 * (238 - v) / 38);
+      const x = i % w;
+      if (x > 0) stack.push(i - 1);
+      if (x < w - 1) stack.push(i + 1);
+      if (i >= w) stack.push(i - w);
+      if (i < w * (h - 1)) stack.push(i + w);
+    }
+    ctx.putImageData(d, 0, 0);
+    img.src = c.toDataURL("image/png");
+  } catch (e) {}
+}
+const sign = $("sign");
+if (sign.complete) clearSignBackdrop(sign); else sign.addEventListener("load", () => clearSignBackdrop(sign), { once: true });
+
+centennial();
+const start =(location.hash || "").slice(1).toUpperCase();
+state = STATES[start] ? start : null;
+reset();
+paintStops();
+</script>
+
+</body>
+</html>
